@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aether — Celestial Social Space</title>
+  <meta name="description" content="Aether is a premium, modern, glassmorphic social network for sharing thoughts, design, and coding inspiration.">
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Grand+Hotel&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  
+  <!-- Global App Layout -->
+  <div class="app-wrapper">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar sidebar-left">
+      <div class="brand-container">
+        <div class="brand-logo">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <span class="brand-name">Aether</span>
+      </div>
+      
+      <nav class="nav-links" id="main-nav" style="display: none;">
+        <button class="nav-btn active" id="nav-feed" data-target="feed-page">
+          <i class="fa-solid fa-compass"></i>
+          <span>Feed</span>
+        </button>
+        <button class="nav-btn" id="nav-explore" data-target="explore-page">
+          <i class="fa-solid fa-users"></i>
+          <span>Discover</span>
+        </button>
+        <button class="nav-btn" id="nav-profile" data-target="profile-page">
+          <i class="fa-solid fa-user-astronaut"></i>
+          <span>Profile</span>
+        </button>
+        <button class="nav-btn" id="btn-compose-trigger">
+          <i class="fa-solid fa-feather-pointed"></i>
+          <span>New Post</span>
+        </button>
+      </nav>
+
+      <div class="nav-links guest-nav" id="guest-nav">
+        <button class="nav-btn active" id="nav-feed-guest" data-target="feed-page">
+          <i class="fa-solid fa-compass"></i>
+          <span>Explore Feed</span>
+        </button>
+        <button class="nav-btn" id="nav-login-guest" data-target="auth-page">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i>
+          <span>Sign In / Up</span>
+        </button>
+      </div>
+
+      <div class="user-card-sticky" id="user-sticky-profile" style="display: none;">
+        <!-- Injected dynamically via JS -->
+      </div>
+    </aside>
+
+    <!-- CENTER DYNAMIC CONTENT -->
+    <main class="content-container">
+      
+      <!-- AUTHENTICATION PAGE -->
+      <section id="auth-page" class="app-page">
+        <div class="auth-box glass-panel">
+          <div class="auth-tabs">
+            <button class="auth-tab-btn active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+            <button class="auth-tab-btn" id="tab-register" onclick="switchAuthTab('register')">Create Account</button>
+          </div>
+          
+          <!-- Login Form -->
+          <form id="form-login" class="auth-form active-form" onsubmit="handleLogin(event)">
+            <h2 class="auth-title">Welcome back to Aether</h2>
+            <p class="auth-subtitle">Enter your celestial credentials to continue.</p>
+            
+            <div class="input-group">
+              <label for="login-username"><i class="fa-solid fa-user"></i> Username or Email</label>
+              <input type="text" id="login-username" required placeholder="e.g. sarah_dev">
+            </div>
+            
+            <div class="input-group">
+              <label for="login-password"><i class="fa-solid fa-lock"></i> Password</label>
+              <input type="password" id="login-password" required placeholder="••••••••">
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-glow">
+              <span>Sign In</span> <i class="fa-solid fa-arrow-right-long"></i>
+            </button>
+          </form>
+
+          <!-- Register Form -->
+          <form id="form-register" class="auth-form" onsubmit="handleRegister(event)">
+            <h2 class="auth-title">Join the Cosmos</h2>
+            <p class="auth-subtitle">Create a space to share your thoughts and creations.</p>
+            
+            <div class="input-group">
+              <label for="reg-display-name"><i class="fa-solid fa-signature"></i> Full Name</label>
+              <input type="text" id="reg-display-name" required placeholder="e.g. Sarah Chen">
+            </div>
+
+            <div class="input-group">
+              <label for="reg-username"><i class="fa-solid fa-at"></i> Username</label>
+              <input type="text" id="reg-username" required placeholder="e.g. sarah_dev">
+            </div>
+
+            <div class="input-group">
+              <label for="reg-email"><i class="fa-solid fa-envelope"></i> Email Address</label>
+              <input type="email" id="reg-email" required placeholder="e.g. sarah@example.com">
+            </div>
+
+            <div class="input-group">
+              <label for="reg-password"><i class="fa-solid fa-lock"></i> Password</label>
+              <input type="password" id="reg-password" required placeholder="•••••••• (Min 6 chars)">
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-glow">
+              <span>Launch Account</span> <i class="fa-solid fa-rocket"></i>
+            </button>
+          </form>
+          
+          <div class="auth-error-msg" id="auth-error" style="display: none;"></div>
+        </div>
+      </section>
+
+      <!-- FEED PAGE -->
+      <section id="feed-page" class="app-page active-page">
+        <!-- Floating Header -->
+        <header class="page-header glass-header">
+          <div>
+            <h1 class="page-title" id="page-main-title">Cosmic Feed</h1>
+            <p class="page-subtitle">The latest broadcasts from across Aether</p>
+          </div>
+          
+          <div class="feed-filter-tabs" id="feed-filter-bar">
+            <button class="feed-filter-btn active" data-filter="all">Explore All</button>
+            <button class="feed-filter-btn" id="filter-btn-following" data-filter="following" style="display: none;">Following</button>
+          </div>
+        </header>
+
+        <!-- New Post Editor (Authenticated only) -->
+        <div class="post-composer glass-panel" id="post-composer" style="display: none;">
+          <div class="composer-header">
+            <div class="user-avatar" id="composer-user-avatar">SC</div>
+            <textarea id="composer-textarea" placeholder="Broadcast your thoughts to the cosmos..." rows="2" maxlength="500"></textarea>
+          </div>
+          
+          <!-- Image attachment indicator drawer -->
+          <div class="composer-media-drawer" id="composer-media-drawer" style="display: none;">
+            <div class="image-input-row">
+              <i class="fa-solid fa-link"></i>
+              <input type="url" id="composer-image-url" placeholder="Paste image link (e.g. https://images.unsplash.com/...)">
+            </div>
+            <div class="composer-image-preview" id="composer-image-preview" style="display: none;">
+              <img src="" id="composer-preview-img" alt="Attached media">
+              <button type="button" class="btn-close-preview" id="btn-clear-image"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+          </div>
+
+          <div class="composer-footer">
+            <button type="button" class="composer-action-btn" id="btn-toggle-image" title="Attach Image Url">
+              <i class="fa-regular fa-image"></i>
+              <span>Attach Image</span>
+            </button>
+            <button type="button" class="btn btn-primary" id="btn-submit-post" onclick="submitPost()">
+              <i class="fa-solid fa-paper-plane"></i> <span>Broadcast</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="post-list-container" id="posts-feed-list">
+          <!-- Injected dynamically via JS -->
+          <div class="loading-shimmer-container">
+            <div class="shimmer-card"></div>
+            <div class="shimmer-card"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPLORE/SUGGESTIONS PAGE -->
+      <section id="explore-page" class="app-page">
+        <header class="page-header glass-header">
+          <div>
+            <h1 class="page-title">Discover Creators</h1>
+            <p class="page-subtitle">Expand your celestial horizon and connect with new minds</p>
+          </div>
+        </header>
+
+        <div class="explore-creators-grid" id="explore-creators-list">
+          <!-- Injected dynamically via JS -->
+        </div>
+      </section>
+
+      <!-- PROFILE PAGE -->
+      <section id="profile-page" class="app-page">
+        <!-- Profile details container -->
+        <div class="profile-layout-container" id="profile-details-wrapper">
+          <!-- Injected dynamically via JS -->
+          <div class="loading-shimmer-container">
+            <div class="shimmer-card" style="height: 250px;"></div>
+          </div>
+        </div>
+
+        <!-- Profile Feed Filter Tabs -->
+        <div class="profile-tabs glass-panel">
+          <button class="profile-tab-btn active" id="profile-tab-posts" onclick="switchProfileFeed('posts')">Posts</button>
+          <button class="profile-tab-btn" id="profile-tab-likes" onclick="switchProfileFeed('likes')">Likes</button>
+        </div>
+
+        <div class="post-list-container" id="profile-posts-list">
+          <!-- Injected dynamically via JS -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar sidebar-right">
+      <!-- Search Panel -->
+      <div class="search-box glass-panel">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search-input" placeholder="Search celestial archives..." oninput="handleSearch(this.value)">
+      </div>
+
+      <!-- Who to Follow -->
+      <div class="widget glass-panel" id="follow-suggestions-widget" style="display: none;">
+        <h3 class="widget-title">Prominent Creators</h3>
+        <div class="suggestions-list" id="suggestions-widget-list">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- Trending Section -->
+      <div class="widget glass-panel">
+        <h3 class="widget-title">Trending Signals</h3>
+        <div class="trending-list">
+          <div class="trend-item" onclick="insertSearchTag('#glassmorphism')">
+            <span class="trend-category">Design Trend</span>
+            <span class="trend-tag">#glassmorphism</span>
+            <span class="trend-count">1,248 broadcasts</span>
+          </div>
+          <div class="trend-item" onclick="insertSearchTag('#node24')">
+            <span class="trend-category">Web Tech</span>
+            <span class="trend-tag">#node24</span>
+            <span class="trend-count">934 broadcasts</span>
+          </div>
+          <div class="trend-item" onclick="insertSearchTag('#creativecoding')">
+            <span class="trend-category">Digital Art</span>
+            <span class="trend-tag">#creativecoding</span>
+            <span class="trend-count">755 broadcasts</span>
+          </div>
+          <div class="trend-item" onclick="insertSearchTag('#aether')">
+            <span class="trend-category">Meta</span>
+            <span class="trend-tag">#aether</span>
+            <span class="trend-count">512 broadcasts</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+    
+  </div>
+
+  <!-- COMMENTS BOTTOM SHEET/MODAL OVERLAY -->
+  <div class="comments-modal-overlay" id="comments-modal" onclick="closeCommentsModal(event)">
+    <div class="comments-sheet glass-panel" onclick="event.stopPropagation()">
+      <div class="sheet-header">
+        <h3 class="sheet-title">Broadcast responses</h3>
+        <button class="btn-close-sheet" onclick="closeCommentsModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="comment-source-post" id="comment-source-post-content">
+        <!-- Main post detail card -->
+      </div>
+      
+      <div class="comments-list-wrapper" id="comments-list-content">
+        <!-- Comments thread list -->
+      </div>
+      
+      <!-- Add Comment Form (auth only) -->
+      <div class="add-comment-composer" id="comment-form-container" style="display: none;">
+        <div class="user-avatar" id="comment-user-avatar">SC</div>
+        <form class="comment-form-box" onsubmit="submitComment(event)">
+          <input type="text" id="comment-input" placeholder="Compose a celestial response..." maxlength="250" required>
+          <button type="submit" class="btn btn-primary btn-round">
+            <i class="fa-solid fa-arrow-up"></i>
+          </button>
+        </form>
+      </div>
+      <div class="comment-guest-prompt" id="comment-guest-prompt">
+        <p>Please <a href="#" onclick="closeCommentsModal(); showPage('auth-page')">Sign In</a> to respond to this post.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE EDIT MODAL -->
+  <div class="edit-profile-modal-overlay" id="edit-profile-modal" onclick="closeEditProfileModal(event)">
+    <div class="edit-profile-box glass-panel" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Refine Persona</h3>
+        <button class="btn-close-modal" onclick="closeEditProfileModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <form id="form-edit-profile" onsubmit="submitEditProfile(event)">
+        <div class="input-group">
+          <label for="edit-display-name">Display Name</label>
+          <input type="text" id="edit-display-name" required placeholder="Your display name">
+        </div>
+        
+        <div class="input-group">
+          <label for="edit-bio">Bio</label>
+          <textarea id="edit-bio" rows="3" placeholder="Tell the cosmos about yourself..." maxlength="160"></textarea>
+        </div>
+
+        <div class="input-group">
+          <label for="edit-cover-url">Cover Image URL</label>
+          <input type="url" id="edit-cover-url" placeholder="https://images.unsplash.com/...">
+        </div>
+
+        <div class="input-group">
+          <label>Avatar Color Accent</label>
+          <div class="avatar-color-picker">
+            <label class="color-swatch-container">
+              <input type="radio" name="avatar-color" value="#6366f1" checked>
+              <span class="color-swatch" style="background-color: #6366f1;"></span>
+            </label>
+            <label class="color-swatch-container">
+              <input type="radio" name="avatar-color" value="#a855f7">
+              <span class="color-swatch" style="background-color: #a855f7;"></span>
+            </label>
+            <label class="color-swatch-container">
+              <input type="radio" name="avatar-color" value="#ec4899">
+              <span class="color-swatch" style="background-color: #ec4899;"></span>
+            </label>
+            <label class="color-swatch-container">
+              <input type="radio" name="avatar-color" value="#f43f5e">
+              <span class="color-swatch" style="background-color: #f43f5e;"></span>
+            </label>
+            <label class="color-swatch-container">
+              <input type="radio" name="avatar-color" value="#06b6d4">
+              <span class="color-swatch" style="background-color: #06b6d4;"></span>
+            </label>
+            <label class="color-swatch-container">
+              <input type="radio" name="avatar-color" value="#10b981">
+              <span class="color-swatch" style="background-color: #10b981;"></span>
+            </label>
+            <label class="color-swatch-container">
+              <input type="radio" name="avatar-color" value="#f59e0b">
+              <span class="color-swatch" style="background-color: #f59e0b;"></span>
+            </label>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">Apply Configuration</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
